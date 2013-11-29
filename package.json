@@ -1,0 +1,24 @@
+{
+  "name": "cli",
+  "version": "0.1.0",
+  "main": "dist/cli.js",
+  "scripts": {
+    "prepublish": "script/prepublish",
+    "test": "script/test"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/distri/cli"
+  },
+  "devDependencies": {
+    "should": "1.2.2",
+    "coffee-script": "~1.6.3",
+    "mocha": "~1.12.0",
+    "uglify-js": "~2.3.6"
+  },
+  "author": "Daniel X. Moore",
+  "license": "MIT"
+}
