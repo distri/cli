@@ -1,0 +1,5 @@
+entryPoint: "source/nested/yolo"
+version: "0.1.0"
+dependencies: {
+  packager: "STRd6/packager:v0.5.0-pre.2"
+}
