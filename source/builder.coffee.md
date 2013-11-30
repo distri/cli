@@ -7,6 +7,7 @@ build products.
 TODO: Should the builder be part of the packager?
 
     CSON = require "./cson"
+    styl = require "styl"
 
 Helpers
 -------

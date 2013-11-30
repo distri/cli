@@ -2,3 +2,7 @@
 set -e
 
 ./node_modules/.bin/coffee -co dist/ source/
+
+mkdir -p bin
+echo "#!/usr/bin/env node" | cat - dist/bin.js > tmp.out && mv tmp.out bin/cli
+chmod +x bin/cli

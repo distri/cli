@@ -61,6 +61,9 @@ unique for all our packages so we use it to determine the URL and name callback.
             bundledDependencies[name] = results[i][0]
 
           return bundledDependencies
+        , (error) ->
+          console.error error
+          process.exit(1)
 
 Create the standalone components of this package. An html page that loads the
 main entry point for demonstration purposes and a json package that can be
@@ -173,10 +176,7 @@ An HTML5 cache manifest for a package.
 attribute.
 
     makeScript = (src) ->
-      script = document.createElement("script")
-      script.src = src
-
-      return script.outerHTML
+      "<script src=#{JSON.stringify(src)}><\/script>"
 
 `dependencyScripts` returns a string containing the script tags that are
 the remote script dependencies of this build.

@@ -15,3 +15,6 @@ succeed with an empty array for results.
           results = [results]
         else
           results
+      , (error) ->
+        console.error error
+        process.exit(1)

@@ -59,12 +59,9 @@ Build into standalone html
       config = readSourceConfig(pkg)
 
       Packager.collectDependencies(config.dependencies, {})
-      .then((dependencies) ->
+      .then (dependencies) ->
         pkg.dependencies = dependencies
 
-        return pkg
-      , error
-      ).then (pkg) ->
         builtFiles = Packager.standAlone pkg
 
         index = builtFiles[0]
