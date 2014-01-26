@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>source/cli</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="http://strd6.github.io/cdn/parallel/docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    <ul class="sections">
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h1 id="cli">CLI</h1>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">
+</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">global.$ = global.jQuery = require <span class="string">"jquery"</span>
+global.CoffeeScript = require <span class="string">"coffee-script"</span>
+
+require <span class="string">"./deferred_patch"</span>
+
+CSON = require <span class="string">"./cson"</span>
+
+Packager = require <span class="string">"./packager"</span>
+Builder = require <span class="string">"./builder"</span>
+FileData = require <span class="string">"./file_data"</span>
+
+mkdirp = require(<span class="string">'mkdirp'</span>)
+fs = require <span class="string">"fs"</span></code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Compile and run distri projects from the command line.</p>
+<p>Read local directories to get all file names for package.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">fileData = FileData()
+
+<span class="function"><span class="title">error</span></span> = -&gt;
+  console.error arguments
+  process.exit(<span class="number">1</span>)</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Build into standalone html</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript"><span class="function"><span class="title">readSourceConfig</span></span> = (pkg) -&gt;
+  <span class="keyword">if</span> configData = pkg.source[<span class="string">"pixie.cson"</span>]?.content
+    CSON.parse(configData)
+  <span class="keyword">else</span> <span class="keyword">if</span> configData = pkg.source[<span class="string">"pixie.json"</span>]?.content
+    JSON.parse(configData)
+  <span class="keyword">else</span>
+    {}
+
+<span class="function"><span class="title">initBuilder</span></span> = -&gt;
+  builder = Builder()
+
+  <span class="comment"># Add editor's metadata</span>
+  builder.addPostProcessor (pkg) -&gt;
+    pkg.progenitor =
+      url: <span class="string">"http://github.com/distri/cli/"</span>
+
+  <span class="comment"># Add metadata from our config</span>
+  builder.addPostProcessor (pkg) -&gt;
+    config = readSourceConfig(pkg)
+
+    pkg.version = config.version
+    pkg.entryPoint = config.entryPoint <span class="keyword">or</span> <span class="string">"main"</span>
+    pkg.remoteDependencies = config.remoteDependencies
+
+  <span class="keyword">return</span> builder
+
+builder = initBuilder()
+
+builder.build(fileData).<span class="keyword">then</span> (pkg) -&gt;
+  config = readSourceConfig(pkg)
+
+  Packager.collectDependencies(config.dependencies, {})
+  .<span class="keyword">then</span> (dependencies) -&gt;
+    pkg.dependencies = dependencies
+
+    builtFiles = Packager.standAlone pkg
+
+    index = builtFiles[<span class="number">0</span>]
+
+    mkdirp <span class="string">'dist'</span>, (err) -&gt;
+      <span class="keyword">if</span> err
+        error <span class="string">"Error making output dir: <span class="subst">#{err}</span>"</span>
+      <span class="keyword">else</span>
+        fs.writeFileSync(<span class="string">"dist/index.html"</span>, index.content)
+
+        runIndex()
+  , error
+, error</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Open in google chrome</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript"><span class="function"><span class="title">runIndex</span></span> = -&gt;
+  <span class="comment"># TODO: Do we need to run from a webserver?</span>
+  spawn = require(<span class="string">'child_process'</span>).spawn
+  child = spawn(<span class="string">"google-chrome"</span>, [<span class="string">"dist/index.html"</span>])</code></pre>
+</div>
+        </li>
+        
+    </ul>
+  </div>
+  <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.3/coffee-script.min.js"></script>
+<script src="http://strd6.github.io/require/v0.2.2.js"></script><script>
+  $.ajax({
+    url: "http://strd6.github.io/interactive/v0.8.1.jsonp",
+    dataType: "jsonp",
+    jsonpCallback: "STRd6/interactive:v0.8.1",
+    cache: true
+  }).then(function(PACKAGE) {
+    Require.generateFor(PACKAGE)("./" + PACKAGE.entryPoint)
+  })
+</script><script src="../package.js"></script>
+</body>
+</html>
